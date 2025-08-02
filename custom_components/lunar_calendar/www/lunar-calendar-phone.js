@@ -133,13 +133,16 @@ export class LunarCalendarPhoneDate extends LitElement {
         width: 100%;
         height: 20px;
       }
+      ha-card {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important; 
+      }
       .content {
         font-weight: bold;
         font-size: 12px;
         color: var(--theme-color);
         text-align: center;
-        background: rgb(0,0,0,0);
-        border: none;
       }
     `;
   } 
