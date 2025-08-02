@@ -21,6 +21,7 @@ theme_on: rgb(120,40,40)           # 翻页时钟模式下mode: B, theme = on �
 theme_off: rgb(50,50,50)           # 翻页时钟模式下mode: B, theme = off 时的背景色
 filter: number.pad                 # 翻页时钟模式下mode: B, 色相对应的辅助元素实体+自动化改变，实现背景色自动变色（平板ui配套、可忽略）
 ~~~
+
   
 ### 配套UI2：平板端弹出菜单（配合browser mod集成的弹出功能）（也可以单独使用）
 ![image](https://github.com/xiaoshi930/lunar_calendar/blob/main/image/pad.png)  
@@ -30,6 +31,7 @@ filter: number.pad                 # 翻页时钟模式下mode: B, 色相对应�
 type: custom:lunar-calendar-pad
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
 ~~~
+
   
 ### 配套UI3：手机端日期显示
 ![image](https://github.com/xiaoshi930/lunar_calendar/blob/main/image/phone_date.png)  
@@ -39,6 +41,7 @@ theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，�
 type: custom:lunar-calendar-phone-date
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
 ~~~
+
   
 ### 配套UI4：手机端弹出菜单（配合browser mod集成的弹出功能）（也可以单独使用）
 ![image](https://github.com/xiaoshi930/lunar_calendar/blob/main/image/phone.png)  
@@ -48,6 +51,7 @@ theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，�
 type: custom:lunar-calendar-phone
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
 ~~~
+
   
 ### 配套UI5：日历部分单独使用
 ![image](https://github.com/xiaoshi930/lunar_calendar/blob/main/image/calendar.png)  
@@ -56,4 +60,30 @@ theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，�
 ~~~
 type: custom:lunar-calendar
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
+~~~
+
+
+### 配套UI6：其他散件单独使用
+**引用示例**
+~~~
+type: custom:lunar-calendar-head
+type: custom:lunar-calendar-body1
+type: custom:lunar-calendar-body2
+type: custom:lunar-calendar-body3
+type: custom:lunar-calendar-body4
+type: custom:lunar-calendar-body5
+type: custom:lunar-calendar-body6
+type: custom:lunar-calendar-body7
+type: custom:lunar-calendar-left1
+type: custom:lunar-calendar-left2
+type: custom:lunar-calendar-left3
+type: custom:lunar-calendar-left4
+type: custom:lunar-calendar-left5
+type: custom:lunar-calendar-left6
+type: custom:lunar-calendar-right1
+type: custom:lunar-calendar-right2
+type: custom:lunar-calendar-right3
+type: custom:lunar-calendar-right4
+type: custom:lunar-calendar-right5
+type: custom:lunar-calendar-right6
 ~~~
