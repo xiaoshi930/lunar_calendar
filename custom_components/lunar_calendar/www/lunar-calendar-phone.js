@@ -135,7 +135,7 @@ export class LunarCalendarPhoneDate extends LitElement {
       }
       .content {
         font-weight: bold;
-        font-size: 16px;
+        font-size: 12px;
         color: var(--theme-color);
         text-align: center;
       }
