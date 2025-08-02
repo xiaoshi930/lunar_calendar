@@ -138,6 +138,8 @@ export class LunarCalendarPhoneDate extends LitElement {
         font-size: 12px;
         color: var(--theme-color);
         text-align: center;
+        background: rgb(0,0,0,0);
+        border: none;
       }
     `;
   } 
