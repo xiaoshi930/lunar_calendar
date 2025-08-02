@@ -8,9 +8,9 @@
 5、生日/纪念日维护：新增、修改、删除  
 6、配套平板端UI、手机端UI  
 
-## 注意事项
-1、添加集成以后，确保万年历实体是默认的 sensor.lunar_calendar
-2、添加集成以后，确保万年历日期是默认的 date.lunar_tap_date
+## 注意事项  
+1、添加集成以后，确保万年历实体是默认的 sensor.lunar_calendar  
+2、添加集成以后，确保万年历日期是默认的 date.lunar_tap_date  
 3、维护生日相关后，需要手动重载集成  
 
 ## 配套UI
