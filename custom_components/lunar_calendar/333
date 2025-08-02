@@ -1,0 +1,64 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Lunar Calendar",
+        "description": "Set up Lunar Calendar integration",
+        "data": {
+          "name": "Name"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "menu": {
+        "title": "农历日历选项",
+        "description": "选择要执行的操作",
+        "data": {
+          "menu_option": "选项"
+        }
+      },
+      "add_birthday": {
+        "title": "添加生日/纪念日",
+        "description": "添加一个新的生日或纪念日",
+        "data": {
+          "name": "名称",
+          "solar_birthday": "阳历生日 (格式: MMDD)",
+          "lunar_birthday": "农历生日 (格式: MMDD)"
+        }
+      },
+      "select_birthday": {
+        "title": "选择生日/纪念日",
+        "description": "选择要编辑的生日或纪念日",
+        "data": {
+          "birthday_index": "选择生日/纪念日"
+        }
+      },
+      "edit_birthday": {
+        "title": "编辑生日/纪念日",
+        "description": "编辑生日或纪念日信息",
+        "data": {
+          "name": "名称",
+          "solar_birthday": "阳历生日 (格式: MMDD)",
+          "lunar_birthday": "农历生日 (格式: MMDD)"
+        }
+      },
+      "delete_birthday": {
+        "title": "删除生日/纪念日",
+        "description": "选择要删除的生日或纪念日",
+        "data": {
+          "birthday_index": "选择生日/纪念日"
+        }
+      }
+    },
+    "error": {
+      "birthday_required": "必须填写阳历生日或农历生日中的至少一项",
+      "invalid_format": "日期格式无效，请使用MMDD格式（如0101表示1月1日）",
+      "invalid_date": "日期无效，请检查月份和日期是否在有效范围内"
+    }
+  }
+}
