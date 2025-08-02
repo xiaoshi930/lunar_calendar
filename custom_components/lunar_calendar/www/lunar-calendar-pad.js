@@ -390,6 +390,7 @@ export class LunarCalendarPadDate extends LitElement {
       ha-card {
         background: transparent !important;
         box-shadow: none !important;
+        border: none !important;
         cursor: pointer;
       }
       .grid-container {
