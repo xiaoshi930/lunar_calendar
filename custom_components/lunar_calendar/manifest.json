@@ -1,0 +1,11 @@
+{
+  "domain": "lunar_calendar",
+  "name": "万年历",
+  "config_flow": true,
+  "documentation": "https://github.com/xiaoshi930/lunar_calendar",
+  "requirements": ["lunardate>=0.2.0"],
+  "dependencies": [],
+  "codeowners": ["@example"],
+  "version": "1.0",
+  "iot_class": "lunar_calendar"
+}

@@ -1,0 +1,64 @@
+{
+    "config": {
+        "title": "万年历",
+        "step": {
+            "user": {
+                "title": "农历万年历设置",
+                "description": "设置农历万年历组件",
+                "data": {
+                    "name": "名称"
+                }
+             }
+        },
+        "error": {
+            "unknown": "未知错误",
+            "invalid_date": "日期格式无效，请使用 MM-DD 格式"
+        },
+        "abort": {
+            "already_configured": "设备已配置"
+        }
+    },
+    "options": {
+        "step": {
+            "menu": {
+                "title": "维护生日/纪念日信息",
+                "description": "",
+                "data": {
+                    "menu_option": " "
+                }
+            },
+            "add_birthday": {
+                "title": "添加生日/纪念日",
+                "description": "",
+                "data": {
+                    "name": "姓名/事件",
+                    "solar_birthday": "阳历日期 (格式0214)",
+                    "lunar_birthday": "农历日期 (格式0214)"
+                }
+            },
+            "edit_birthday": {
+                "title": "编辑生日/纪念日",
+                "description": "",
+                "data": {
+                  "name": "姓名/事件",
+                  "solar_birthday": "阳历日期 (格式0214)",
+                  "lunar_birthday": "农历日期 (格式0214)"
+              }
+            },
+            "select_birthday": {
+                "title": "编辑生日/纪念日",
+                "description": "",
+                "data": {
+                    "birthday_index": " "
+                }
+            },
+            "delete_birthday": {
+                "title": "删除生日/纪念日",
+                "description": "",
+                "data": {
+                    "birthday_index": " "
+              }
+            }
+        }
+    }
+}

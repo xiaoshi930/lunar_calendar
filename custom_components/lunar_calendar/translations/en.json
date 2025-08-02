@@ -1,0 +1,16 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "设置Lunar Calendar",
+                "description": "设置Lunar Calendar integration",
+                "data": {
+                    "name": "Name"
+                }
+            }
+        },
+        "abort": {
+            "already_configured": "Device is already configured"
+        }
+    }
+}
