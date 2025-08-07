@@ -14,7 +14,7 @@
 3、维护生日相关后，需要手动重载集成  
 
 ## 如何下载
-1、先添加自定义集成 https://github.com/xiaoshi930/lunar_calendar，后在HACS中搜索"万年历"，安装此集成，重启Home Assistant  
+1、先添加自定义集成 https://github.com/xiaoshi930/lunar_calendar  ，后在HACS中搜索"万年历"，安装此集成，重启Home Assistant  
 2、将 `lunar_calendar` 文件夹复制到你的 Home Assistant 配置目录下的 `custom_components` 文件夹中，重启 Home Assistant
 
 ## 配套UI
