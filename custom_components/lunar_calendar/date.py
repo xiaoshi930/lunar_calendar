@@ -34,6 +34,11 @@ class TapDateEntity(DateEntity):
         self._attr_native_value = dt_util.now().date()
         self._attributes: Dict[str, Any] = {}
         self._last_midnight = self._get_last_midnight()
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, entry_id)},
+            "name": name,
+            "manufacturer": "Lunar Calendar"
+        }
         # 初始化时不立即设置定时器，等待添加到hass后再设置
 
     @property
