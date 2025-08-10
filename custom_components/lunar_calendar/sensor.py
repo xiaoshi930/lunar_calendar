@@ -43,6 +43,11 @@ class LunarSensor(SensorEntity):
         self._birthdays = birthdays
         self._config_entry = config_entry
         self._unsubscribe_listener = None
+        self._attr_device_info = {
+            "identifiers": {(DOMAIN, entry_id)},
+            "name": name,
+            "manufacturer": "Lunar Calendar"
+        }
 
     async def async_added_to_hass(self) -> None:
         """当实体被添加到 Home Assistant 时调用。"""
