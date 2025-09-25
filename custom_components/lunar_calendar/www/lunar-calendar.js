@@ -323,15 +323,15 @@ export class LunarCalendar extends LitElement {
       result.className += isCurrentMonth ? ' birthday-current' : ' birthday-other';
       return result;
     }
-    const solarFestival = this.checkSolarFestival(index);
-    if (solarFestival) {
-      result.displayText = solarFestival;
-      result.className += isCurrentMonth ? ' festival-current' : ' festival-other';
-      return result;
-    }
     const lunarFestival = this.checkLunarFestival(index);
     if (lunarFestival) {
       result.displayText = lunarFestival;
+      result.className += isCurrentMonth ? ' festival-current' : ' festival-other';
+      return result;
+    }
+    const solarFestival = this.checkSolarFestival(index);
+    if (solarFestival) {
+      result.displayText = solarFestival;
       result.className += isCurrentMonth ? ' festival-current' : ' festival-other';
       return result;
     }
