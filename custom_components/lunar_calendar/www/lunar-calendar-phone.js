@@ -1,5 +1,96 @@
 import { LitElement, html, css } from "https://unpkg.com/lit-element@2.4.0/lit-element.js?module";
 
+
+export class LunarCalendarPhoneDate extends LitElement {
+  static get properties() {
+    return {
+      hass: { type: Object },
+      config: { type: Object },
+      _theme: { type: String }
+    };
+  }
+
+  setConfig(config) {
+    this.config = config;
+    this._theme = config.theme || 'off';
+  }
+
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+        width: 100%;
+        height: 20px;
+      }
+      ha-card {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important; 
+      }
+      .content {
+        font-weight: bold;
+        font-size: 12px;
+        color: var(--theme-color);
+        text-align: center;
+      }
+    `;
+  } 
+
+  render() {
+    const theme = this._evaluateTheme();
+    const Color =  theme  == 'on' ? 'rgb(0,0,0)' : 'rgb(255,255,255)';
+    this.style.setProperty('--theme-color', Color);
+    if (!this.hass || !this.config) {
+      return html``;
+    }
+    const entityId = this.config.entity || 'sensor.lunar_calendar';
+    const state = this.hass.states[entityId];
+    if (!state || !state.attributes) {
+      return html``;
+    }
+    const stateAttrs = state.attributes;
+    const date = stateAttrs['今天的阳历日期']?.['日期3'] || '';
+    const week = stateAttrs['今天的阳历日期']?.['星期1'] || '';
+    const lunaryear = stateAttrs['今天的农历日期']?.['年'] || '';
+    const lunardate = stateAttrs['今天的农历日期']?.['日期'] || '';
+    const nowdate = `${date} ${week} 【农历 ${lunaryear} ${lunardate}】`;
+
+    return html`
+      <ha-card @click=${this._showPopup}>
+        <div class="content">${nowdate}</div>
+      </ha-card>
+    `;
+  }
+
+  _evaluateTheme() {
+    try {
+      if (typeof this.config.theme === 'function') return this.config.theme();
+      if (typeof this.config.theme === 'string' && this.config.theme.includes('theme()')) {
+        return (new Function('return theme()'))();
+      }
+      return this.config.theme || 'off';
+    } catch(e) {
+      return 'off';
+    }
+  } 
+
+  _showPopup() {
+    const popupContent = this.config.popup_content || {
+      type: 'custom:lunar-calendar-phone',
+      theme: this._evaluateTheme()
+    };
+    const popupStyle = this.config.popup_style || `
+      --mdc-theme-surface: rgb(0,0,0,0);
+      --dialog-backdrop-filter: blur(10px) brightness(1);
+    `;
+    window.browser_mod.service('popup', { 
+      style: popupStyle,
+      content: popupContent
+    });
+  }
+}
+customElements.define('lunar-calendar-phone-date', LunarCalendarPhoneDate);
+
 export class LunarCalendarPhone extends LitElement {
   static get properties() {
     return {
@@ -112,92 +203,3 @@ export class LunarCalendarPhone extends LitElement {
 }
 customElements.define('lunar-calendar-phone', LunarCalendarPhone);
 
-export class LunarCalendarPhoneDate extends LitElement {
-  static get properties() {
-    return {
-      hass: { type: Object },
-      config: { type: Object },
-      _theme: { type: String }
-    };
-  }
-
-  setConfig(config) {
-    this.config = config;
-    this._theme = config.theme || 'off';
-  }
-
-  static get styles() {
-    return css`
-      :host {
-        display: block;
-        width: 100%;
-        height: 20px;
-      }
-      ha-card {
-        background: transparent !important;
-        box-shadow: none !important;
-        border: none !important; 
-      }
-      .content {
-        font-weight: bold;
-        font-size: 12px;
-        color: var(--theme-color);
-        text-align: center;
-      }
-    `;
-  } 
-
-  render() {
-    const theme = this._evaluateTheme();
-    const Color =  theme  == 'on' ? 'rgb(0,0,0)' : 'rgb(255,255,255)';
-    this.style.setProperty('--theme-color', Color);
-    if (!this.hass || !this.config) {
-      return html``;
-    }
-    const entityId = this.config.entity || 'sensor.lunar_calendar';
-    const state = this.hass.states[entityId];
-    if (!state || !state.attributes) {
-      return html``;
-    }
-    const stateAttrs = state.attributes;
-    const date = stateAttrs['今天的阳历日期']?.['日期3'] || '';
-    const week = stateAttrs['今天的阳历日期']?.['星期1'] || '';
-    const lunaryear = stateAttrs['今天的农历日期']?.['年'] || '';
-    const lunardate = stateAttrs['今天的农历日期']?.['日期'] || '';
-    const nowdate = `${date} ${week} 【农历 ${lunaryear} ${lunardate}】`;
-
-    return html`
-      <ha-card @click=${this._showPopup}>
-        <div class="content">${nowdate}</div>
-      </ha-card>
-    `;
-  }
-
-  _evaluateTheme() {
-    try {
-      if (typeof this.config.theme === 'function') return this.config.theme();
-      if (typeof this.config.theme === 'string' && this.config.theme.includes('theme()')) {
-        return (new Function('return theme()'))();
-      }
-      return this.config.theme || 'off';
-    } catch(e) {
-      return 'off';
-    }
-  } 
-
-  _showPopup() {
-    const popupContent = this.config.popup_content || {
-      type: 'custom:lunar-calendar-phone',
-      theme: this._evaluateTheme()
-    };
-    const popupStyle = this.config.popup_style || `
-      --mdc-theme-surface: rgb(0,0,0,0);
-      --dialog-backdrop-filter: blur(10px) brightness(1);
-    `;
-    window.browser_mod.service('popup', { 
-      style: popupStyle,
-      content: popupContent
-    });
-  }
-}
-customElements.define('lunar-calendar-phone-date', LunarCalendarPhoneDate);
