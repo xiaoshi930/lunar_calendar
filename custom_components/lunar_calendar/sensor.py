@@ -519,21 +519,7 @@ class LunarSensor(SensorEntity):
             
             birthday_info.append(birthday_data)
         
-        # 按照距离今天的天数排序（优先使用农历天数，如果没有则使用阳历天数）
-        def get_days_until(item):
-            lunar_days = item.get("农历天数")
-            solar_days = item.get("阳历天数")
-            
-            if lunar_days:
-                return int(lunar_days)
-            elif solar_days:
-                return int(solar_days)
-            else:
-                return 365  # 默认值
-                
-        birthday_info.sort(key=get_days_until)
-        
-        # 提取并排序阳历和农历天数
+        # 提取并排序阳历和农历天数（用于"最近的生日"）
         sorted_birthdays = []
         for item in birthday_info:
             name = item.get("名称", "")
@@ -548,7 +534,7 @@ class LunarSensor(SensorEntity):
                 days = int(solar_days)
                 sorted_birthdays.append({"name": name, "days": days})
         
-        # 按天数排序
+        # 按天数排序（仅用于"最近的生日"）
         sorted_birthdays.sort(key=lambda x: x["days"])
         
         # 生成最近生日信息数组
