@@ -1,6 +1,6 @@
 # 数据来源
 https://6tail.cn/calendar/api.html#overview.html  
-https://github.com/6tail/lunar-javascript  
+https://github.com/6tail/lunar-python
 
 # 农历万年历
 
