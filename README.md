@@ -75,28 +75,3 @@ type: custom:lunar-calendar
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
 ~~~
 
-
-### 配套UI6：其他散件单独使用
-**引用示例**
-~~~
-type: custom:lunar-calendar-head
-type: custom:lunar-calendar-body1
-type: custom:lunar-calendar-body2
-type: custom:lunar-calendar-body3
-type: custom:lunar-calendar-body4
-type: custom:lunar-calendar-body5
-type: custom:lunar-calendar-body6
-type: custom:lunar-calendar-body7
-type: custom:lunar-calendar-left1
-type: custom:lunar-calendar-left2
-type: custom:lunar-calendar-left3
-type: custom:lunar-calendar-left4
-type: custom:lunar-calendar-left5
-type: custom:lunar-calendar-left6
-type: custom:lunar-calendar-right1
-type: custom:lunar-calendar-right2
-type: custom:lunar-calendar-right3
-type: custom:lunar-calendar-right4
-type: custom:lunar-calendar-right5
-type: custom:lunar-calendar-right6
-~~~
