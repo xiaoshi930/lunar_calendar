@@ -15,7 +15,7 @@ const cardConfigs = [
     type: 'xiaoshi-lunar-calendar-phone-date',
     name: '消逝万年历 - 手机日期',
     description: '',
-		preview: true
+	preview: true
   },
   {
     type: 'xiaoshi-lunar-calendar-phone',
@@ -26,7 +26,7 @@ const cardConfigs = [
     type: 'xiaoshi-lunar-calendar-pad-date',
     name: '消逝万年历 - 平板日期',
     description: '',
-		preview: true
+	preview: true
   },
   {
     type: 'xiaoshi-lunar-calendar-pad',
@@ -37,8 +37,14 @@ const cardConfigs = [
     type: 'xiaoshi-lunar-calendar',
     name: '消逝万年历 - 日历UI',
     description: '',
-		preview: true
+	preview: true
   },
+  {
+    type: 'xiaoshi-birthday-card',
+    name: '消逝万年历 - 生日信息卡片',
+    description: '',
+	preview: true
+  }
 ];
 
 loadCards ();
