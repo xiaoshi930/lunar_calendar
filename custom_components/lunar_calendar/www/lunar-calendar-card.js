@@ -4,32 +4,27 @@ const cardConfigs = [
   {
     type: 'lunar-calendar-phone-date',
     name: '万年历 - 手机日期UI',
-    description: '',
-		preview: true
+    description: ''
   },
   {
     type: 'lunar-calendar-phone',
     name: '万年历 - 手机UI',
     description: '',
-		preview: true
   },
   {
     type: 'lunar-calendar-pad-date',
     name: '万年历 - 平板日期UI',
-    description: '',
-		preview: true
+    description: ''
   },
   {
     type: 'lunar-calendar-pad',
     name: '万年历 - 平板UI',
     description: '',
-		preview: true
   },
   {
     type: 'lunar-calendar',
     name: '万年历 - 日历UI',
-    description: '',
-		preview: true
+    description: ''
   },
 ];
 
