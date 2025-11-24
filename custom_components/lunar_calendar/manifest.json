@@ -6,6 +6,6 @@
   "requirements": ["lunardate>=0.2.0"],
   "dependencies": [],
   "codeowners": ["@example"],
-  "version": "1.9",
+  "version": "2.0",
   "iot_class": "local_polling"
 }
