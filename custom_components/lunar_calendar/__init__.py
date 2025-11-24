@@ -38,5 +38,5 @@ async def setup_lunar_calendar_card(hass: HomeAssistant) -> bool:
         StaticPathConfig(lunar_calendar_card_path, hass.config.path('custom_components/lunar_calendar/www'), False)
     ])
     _LOGGER.debug(f"register_static_path: {lunar_calendar_card_path + ':custom_components/lunar_calendar/www'}")
-    add_extra_js_url(hass, lunar_calendar_card_path + f"/lunar-calendar-card.js")
+    add_extra_js_url(hass, lunar_calendar_card_path + f"/xiaoshi-lunar-calendar-card.js")
     return True
