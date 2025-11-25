@@ -33,7 +33,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     return unload_ok
 
 async def setup_lunar_calendar_card(hass: HomeAssistant) -> bool:
-    lunar_calendar_card_path = '/lunar_calendar_card-local'
+    lunar_calendar_card_path = '/xiaoshi-lunar-calendar-card'
     await hass.http.async_register_static_paths([
         StaticPathConfig(lunar_calendar_card_path, hass.config.path('custom_components/lunar_calendar/www'), False)
     ])
