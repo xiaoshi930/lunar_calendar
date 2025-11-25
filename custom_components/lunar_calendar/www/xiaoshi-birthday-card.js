@@ -1,6 +1,8 @@
+console.info("%c 消逝-万年历 \n%c      v 2.1 ", "color: red; font-weight: bold; background: black", "color: white; font-weight: bold; background: black");
+
 import { LitElement, html, css } from "https://unpkg.com/lit-element@2.4.0/lit-element.js?module";
 
-class XiaoshiBirthdayCardEditor extends LitElement {
+export class XiaoshiBirthdayCardEditor extends LitElement {
   static get properties() {
     return {
       hass: { type: Object },
@@ -366,6 +368,22 @@ class XiaoshiBirthdayCardEditor extends LitElement {
         </div>
 
         <div class="form-group">
+          <label>全局预警值：所有明细的默认预警天数（明细可单独覆盖）</label>
+          <input 
+            type="number" 
+            @change=${this._entityChanged}
+            .value=${this.config.warning !== undefined ? this.config.warning : ''}
+            name="warning"
+            placeholder="留空则不预警，例如：7表示7天内预警"
+            min="0"
+            step="1"
+          />
+          <div class="help-text">
+            • 全局预警值：当生日距离天数小于等于此值时显示红色预警<br>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label>生日数据实体：搜索并选择包含生日数据的实体</label>
           <div class="entity-selector">
             <input 
@@ -486,7 +504,7 @@ class XiaoshiBirthdayCardEditor extends LitElement {
                             class="override-input"
                             @change=${(e) => this._updateItemField(index, 'warning', e.target.value)}
                             .value=${item.warning || ''}
-                            placeholder="天数预警值"
+                            placeholder="留空使用全局预警值"
                             min="0"
                             step="1"
                           />
@@ -511,7 +529,9 @@ class XiaoshiBirthdayCardEditor extends LitElement {
             • 显示规则：自动选择阳历天数和农历天数中较小的非零值显示<br>
             • 名称重定义：有内容时重定义名称，否则使用默认名称<br>
             • 图标重定义：有内容时重定义图标，否则使用默认图标(mdi:calendar)<br>
-            • 预警值：有内容时设置天数预警值，低于此值显示红色<br>
+            • 预警规则：明细预警值优先于全局预警值，都没有则不预警<br>
+            • 全局预警：为所有明细设置统一的预警天数<br>
+            • 明细预警：为单个明细设置专属预警天数，覆盖全局设置<br>
             • 自动排序：勾选后按照生日天数升序排列，不勾选按配置顺序显示
           </div>
         </div>
@@ -661,7 +681,10 @@ class XiaoshiBirthdayCardEditor extends LitElement {
 
   _removeBirthdayItem(itemIndex) {
     const items = this.config.items || [];
-    const newItems = items.filter((_, index) => index !== itemIndex);
+    // 深拷贝剩余的对象
+    const newItems = items
+      .filter((_, index) => index !== itemIndex)
+      .map(item => ({ ...item }));
     
     this.config = {
       ...this.config,
@@ -679,7 +702,8 @@ class XiaoshiBirthdayCardEditor extends LitElement {
 
   _updateItemField(itemIndex, field, value) {
     const items = this.config.items || [];
-    const newItems = [...items];
+    // 深拷贝每个对象，避免修改只读对象
+    const newItems = items.map(item => ({ ...item }));
     
     if (field.includes('enabled')) {
       newItems[itemIndex][field] = value;
@@ -721,11 +745,15 @@ class XiaoshiBirthdayCardEditor extends LitElement {
   }
 
   setConfig(config) {
-    this.config = config;
+    // 创建新的配置对象，避免修改被冻结的原对象
+    this.config = { ...config };
     
     // 如果没有配置实体，设置默认实体
     if (!this.config.entity) {
-      this.config.entity = 'sensor.lunar_calendar';
+      this.config = {
+        ...this.config,
+        entity: 'sensor.lunar_calendar'
+      };
     }
     
     // 设置搜索词为当前实体ID
@@ -734,7 +762,7 @@ class XiaoshiBirthdayCardEditor extends LitElement {
 } 
 customElements.define('xiaoshi-birthday-card-editor', XiaoshiBirthdayCardEditor);
 
-class XiaoshiBirthdayCard extends LitElement {
+export class XiaoshiBirthdayCard extends LitElement {
   static get properties() {
     return {
       hass: Object,
@@ -1036,10 +1064,7 @@ class XiaoshiBirthdayCard extends LitElement {
       // 直接从 attributes.生日 获取数据
       if (attributes.生日 && Array.isArray(attributes.生日)) {
         birthdayInfo = { 生日: attributes.生日 };
-        console.log('从 attributes.生日 获取到生日数据，数组长度:', attributes.生日.length);
-      } else {
-        console.warn('attributes.生日 不存在或不是数组');
-        console.log('可用属性:', Object.keys(attributes));
+       } else {
         this._oilPriceData = [];
         this._loading = false;
         return;
@@ -1095,7 +1120,16 @@ class XiaoshiBirthdayCard extends LitElement {
                 // 应用明细级别的自定义配置
                 let friendlyName = item.name ? item.name : person.名称;
                 let icon = item.icon ? item.icon : 'mdi:calendar';
-                let warningThreshold = item.warning ? parseFloat(item.warning) : undefined;
+                
+                // 预警值逻辑：明细优先，全局兜底
+                let warningThreshold = undefined;
+                if (item.warning && item.warning !== '') {
+                  // 明细设置了预警值，使用明细的
+                  warningThreshold = parseFloat(item.warning);
+                } else if (this.config.warning && this.config.warning !== '') {
+                  // 明细没设置但全局设置了，使用全局的
+                  warningThreshold = parseFloat(this.config.warning);
+                }
 
                 birthdayData.push({
                   entity_id: entityId,
