@@ -74,7 +74,19 @@ export class LunarCalendarPhoneDate extends LitElement {
     }
   } 
 
+  _handleClick(){
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+    else if (navigator.webkitVibrate) {
+        navigator.webkitVibrate(50); 
+    }
+    else {
+    }
+  }
+
   _showPopup() {
+    this._handleClick();
     const popupContent = this.config.popup_content || {
       type: 'custom:xiaoshi-lunar-calendar-phone',
       theme: this._evaluateTheme()
