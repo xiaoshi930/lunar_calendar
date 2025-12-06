@@ -52,7 +52,7 @@ class LunarOptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry):
         """初始化选项流程."""
-        self.config_entry = config_entry
+        self._config_entry = config_entry
         self.data = dict(config_entry.data)
         self.birthdays = list(self.data.get(CONF_BIRTHDAYS, []))
         self.current_birthday = None
@@ -136,7 +136,7 @@ class LunarOptionsFlowHandler(config_entries.OptionsFlow):
                     
                     # 更新配置条目
                     self.hass.config_entries.async_update_entry(
-                        self.config_entry, data=self.data
+                        self._config_entry, data=self.data
                     )
                     return self.async_create_entry(title="", data={})
 
@@ -218,7 +218,7 @@ class LunarOptionsFlowHandler(config_entries.OptionsFlow):
                     
                     # 更新配置条目
                     self.hass.config_entries.async_update_entry(
-                        self.config_entry, data=self.data
+                        self._config_entry, data=self.data
                     )
                     return self.async_create_entry(title="", data={})
 
@@ -241,7 +241,7 @@ class LunarOptionsFlowHandler(config_entries.OptionsFlow):
             
             # 更新配置条目
             self.hass.config_entries.async_update_entry(
-                self.config_entry, data=self.data
+                self._config_entry, data=self.data
             )
             return self.async_create_entry(title="", data={})
 
