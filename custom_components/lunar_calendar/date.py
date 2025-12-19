@@ -1,5 +1,6 @@
 """农历集成的日期平台."""
 import logging
+import time
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
@@ -74,9 +75,13 @@ class TapDateEntity(DateEntity):
 
     async def async_set_value(self, value: datetime.date) -> None:
         """设置日期值."""
+        start_time = time.time()
+        _LOGGER.debug(f"[DATE] 点击日期开始: {value}, 开始时间: {start_time}")
+        
         self._attr_native_value = value
         
         # 更新属性，可以在这里添加与所选日期相关的信息
+        attr_start = time.time()
         self._attributes = {
             "selected_date": value.isoformat(),
             "day_of_week": value.strftime("%A"),
@@ -87,8 +92,16 @@ class TapDateEntity(DateEntity):
             "is_weekend": value.weekday() >= 5,  # 5=Saturday, 6=Sunday
             "last_updated": dt_util.now().isoformat()
         }
+        attr_time = (time.time() - attr_start) * 1000
+        _LOGGER.debug(f"[DATE] 属性设置完成，耗时: {attr_time:.2f}毫秒")
         
+        write_start = time.time()
         self.async_write_ha_state()
+        write_time = (time.time() - write_start) * 1000
+        _LOGGER.debug(f"[DATE] 状态写入完成，耗时: {write_time:.2f}毫秒")
+        
+        total_time = (time.time() - start_time) * 1000
+        _LOGGER.info(f"[DATE] 点击日期处理完成，总耗时: {total_time:.2f}毫秒，日期: {value}")
         
     @callback
     def _handle_midnight_update(self, *_) -> None:
@@ -116,6 +129,11 @@ class TapDateEntity(DateEntity):
             
             self.async_write_ha_state()
             _LOGGER.info("农历日期实体：已在0点1秒自动更新日期为 %s", now.date())
+            
+            # 触发传感器更新以刷新缓存
+            self.hass.bus.async_fire("lunar_calendar_midnight_update", {
+                "date": now.date().isoformat()
+            })
             
         # 设置下一次0点更新
         self._setup_midnight_update()
