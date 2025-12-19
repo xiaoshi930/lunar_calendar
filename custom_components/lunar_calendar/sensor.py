@@ -15,6 +15,7 @@ from homeassistant.helpers.typing import StateType
 from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN, CONF_BIRTHDAYS, CONF_NAME, CONF_SOLAR_BIRTHDAY, CONF_LUNAR_BIRTHDAY
+from .lunar_optimizer import lunar_cache_manager
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -49,6 +50,9 @@ class LunarSensor(SensorEntity):
         self._cached_birthdays = None
         self._cache_date = None  # 缓存的日期
         self._last_cache_date = None  # 上次缓存的日期
+        # 日历数组缓存
+        self._cached_calendar_data = None  # 缓存的日历数据
+        self._cached_calendar_month = None  # 缓存的月份标识
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry_id)},
             "name": name,
@@ -75,11 +79,15 @@ class LunarSensor(SensorEntity):
         def _async_midnight_listener(event):
             """处理0点更新事件，清除缓存。"""
             _LOGGER.debug(f"[SENSOR] 检测到0点更新事件，清除缓存: {event.data}")
-            # 清除缓存，强制重新计算
+            # 清除所有缓存，强制重新计算
             self._cached_festivals = None
             self._cached_birthdays = None
             self._cache_date = None
             self._last_cache_date = None
+            self._cached_calendar_data = None
+            self._cached_calendar_month = None
+            # 清除农历计算缓存
+            lunar_cache_manager.clear_cache()
             # 延迟1秒后更新，确保日期已更新
             async_call_later(self.hass, 1, lambda _: self.async_schedule_update_ha_state(True))
             
@@ -203,137 +211,137 @@ class LunarSensor(SensorEntity):
         # 计算点击日期的，日历数组（包括农历数组、农历文本数组、节日数日、节气数组、假期数组）
         calendar_start = time.time()
         _LOGGER.debug(f"[SENSOR] 开始生成日历数组: {tap_solar_year}-{tap_solar_month}")
-        tap_year = tap_solar_year
-        tap_month = tap_solar_month
-        isrunnian = SolarUtil.isLeapYear(int(tap_year))  # 是否闰年 
-        tap_month_sum_last = 1                           # 上月天数
-        tap_month_sum = 1                                # 本月天数
-        # 计算月份天数
-        if tap_month == "01":
-            tap_month_sum_last = 31
-            tap_month_sum = 31
-        if tap_month == "02" and isrunnian == 1:
-            tap_month_sum_last = 31
-            tap_month_sum = 29
-        if tap_month == "02" and isrunnian == 0:
-            tap_month_sum_last = 31
-            tap_month_sum = 28
-        if tap_month == "03" and isrunnian == 1:
-            tap_month_sum_last = 29
-            tap_month_sum = 31
-        if tap_month == "03" and isrunnian == 0:
-            tap_month_sum_last = 28
-            tap_month_sum = 31
-        if tap_month == "04":
-            tap_month_sum_last = 31
-            tap_month_sum = 30
-        if tap_month == "05":
-            tap_month_sum_last = 30
-            tap_month_sum = 31
-        if tap_month == "06":
-            tap_month_sum_last = 31
-            tap_month_sum = 30
-        if tap_month == "07":
-            tap_month_sum_last = 30
-            tap_month_sum = 31
-        if tap_month == "08":
-            tap_month_sum_last = 31
-            tap_month_sum = 31
-        if tap_month == "09":
-            tap_month_sum_last = 31
-            tap_month_sum = 30
-        if tap_month == "10":
-            tap_month_sum_last = 30
-            tap_month_sum = 31
-        if tap_month == "11":
-            tap_month_sum_last = 31
-            tap_month_sum = 30
-        if tap_month == "12":
-            tap_month_sum_last = 30
-            tap_month_sum = 31
-            
-        tap_month_01 = f"{tap_year}-{tap_month}-01T00:00:00"                      # 点击年-点击月-1号的id
-        tap_month_01_time = Lunar.fromDate(datetime.fromisoformat(tap_month_01))  # 点击年-点击月-1号的日期
-        tapweek1id = tap_month_01_time.getWeek()  # 点击年-点击月-1号是周几
-        if tapweek1id == 0:
-            tapweek1id = 7  # 点击年-点击月-1号是周几
-        tapweek1id = tapweek1id - 1
-
-        tap_new_dateTime = ""  # 初始化变量
-        day_label = ""
-        month_label = ""
-        day = 0
-        month = 0
-        year = 0
-        lunarday_num = [None] * 42       # 农历数组
-        lunar_label = [None] * 42        # 农历文本
-        jieqi_label = [None] * 42        # 节气文本
-        jiaqi_label = [None] * 42        # 假期文本
-        jieri_label_lunar = [None] * 42  # 农历节日文本
-        jieri_label_solar = [None] * 42  # 阳历节日文本
-
-        # 循环上面定义的数组，6*7=共42个格子的数组
-        loop_start = time.time()
-        for id in range(42):
-            if id - tapweek1id >= 0 and id - tapweek1id < tap_month_sum:
-                year = tap_year
-                month = tap_month
-                day = id - tapweek1id + 1
-                day_label = f"{day:02d}"
-                month_label = f"{int(month):02d}"
-            
-            if id - tapweek1id < 0 and int(tap_month) > 1:
-                year = tap_year
-                month = int(tap_month) - 1
-                day = id - tapweek1id + 1 + tap_month_sum_last
-                day_label = f"{day:02d}"
-                month_label = f"{month:02d}"
-            
-            if id - tapweek1id < 0 and tap_month == "01":
-                year = str(int(tap_year) - 1)
-                day = id - tapweek1id + 1 + tap_month_sum_last
-                day_label = f"{day:02d}"
-                month_label = "12"
-            
-            if id - tapweek1id >= tap_month_sum and int(tap_month) < 12:
-                year = tap_year
-                month = int(tap_month) + 1
-                day = id - tapweek1id - tap_month_sum + 1
-                day_label = f"{day:02d}"
-                month_label = f"{month:02d}"
-            
-            if id - tapweek1id >= tap_month_sum and tap_month == "12":
-                year = str(int(tap_year) + 1)
-                day = id - tapweek1id - tap_month_sum + 1
-                day_label = f"{day:02d}"
-                month_label = "01"
-            
-            tap_new_dateTime = f"{year}-{month_label}-{day_label}T00:00:00"
-            lunarid = Lunar.fromDate(datetime.fromisoformat(tap_new_dateTime))  # 获取点击数后的函数头
-            solarid = Solar.fromDate(datetime.fromisoformat(tap_new_dateTime))  # 获取点击数后的函数头
-            lunar_label[id] = f"{lunarid.getMonthInChinese()}月{lunarid.getDayInChinese()}"
-            jieqi_label[id] = lunarid.getJieQi()
-            
-            festivals_lunar = lunarid.getFestivals()
-            jieri_label_lunar[id] = festivals_lunar[0] if festivals_lunar else None
-            
-            festivals_solar = solarid.getFestivals()
-            jieri_label_solar[id] = festivals_solar[0] if festivals_solar else None
-
-            yy = lunarid.getYear()
-            mm = str(abs(lunarid.getMonth())).zfill(2)
-            dd = str(abs(lunarid.getDay())).zfill(2)
-            lunarsum = LunarMonth.fromYm(int(yy), int(mm)).getDayCount()
-            lunarday_num[id] = f"{mm}{dd}{lunarsum}"
-            
-            d1 = f"{year}-{month_label}-{day_label}"
-            d2 = HolidayUtil.getHoliday(d1)
-            if d2 is not None:
-                jiaqi_label[id] = d2.isWork()
-
         
-        loop_time = (time.time() - loop_start) * 1000
-        _LOGGER.debug(f"[SENSOR] 日历数组循环生成完成，耗时: {loop_time:.2f}毫秒")
+        # 检查日历缓存
+        current_month_key = f"{tap_solar_year}-{tap_solar_month}"
+        if (self._cached_calendar_data is not None and 
+            self._cached_calendar_month == current_month_key):
+            _LOGGER.debug(f"[SENSOR] 使用日历缓存，跳过计算")
+            lunarday_num = self._cached_calendar_data["lunarday_num"]
+            lunar_label = self._cached_calendar_data["lunar_label"]
+            jieqi_label = self._cached_calendar_data["jieqi_label"]
+            jiaqi_label = self._cached_calendar_data["jiaqi_label"]
+            jieri_label_lunar = self._cached_calendar_data["jieri_label_lunar"]
+            jieri_label_solar = self._cached_calendar_data["jieri_label_solar"]
+        else:
+            _LOGGER.debug(f"[SENSOR] 缓存失效，重新计算日历数组")
+            
+            tap_year = tap_solar_year
+            tap_month = tap_solar_month
+            isrunnian = SolarUtil.isLeapYear(int(tap_year))  # 是否闰年 
+            tap_month_sum_last = 1                           # 上月天数
+            tap_month_sum = 1                                # 本月天数
+            
+            # 优化月份天数计算 - 使用字典替代多重if
+            month_days = {
+                "01": (31, 31), "02": (31, 29 if isrunnian else 28), "03": (29 if isrunnian else 28, 31),
+                "04": (31, 30), "05": (30, 31), "06": (31, 30),
+                "07": (30, 31), "08": (31, 31), "09": (31, 30),
+                "10": (30, 31), "11": (31, 30), "12": (30, 31)
+            }
+            
+            if tap_month in month_days:
+                tap_month_sum_last, tap_month_sum = month_days[tap_month]
+                
+            tap_month_01 = f"{tap_year}-{tap_month}-01T00:00:00"                      # 点击年-点击月-1号的id
+            tap_month_01_time = Lunar.fromDate(datetime.fromisoformat(tap_month_01))  # 点击年-点击月-1号的日期
+            tapweek1id = tap_month_01_time.getWeek()  # 点击年-点击月-1号是周几
+            if tapweek1id == 0:
+                tapweek1id = 7  # 点击年-点击月-1号是周几
+            tapweek1id = tapweek1id - 1
+
+            tap_new_dateTime = ""  # 初始化变量
+            day_label = ""
+            month_label = ""
+            day = 0
+            month = 0
+            year = 0
+            lunarday_num = [None] * 42       # 农历数组
+            lunar_label = [None] * 42        # 农历文本
+            jieqi_label = [None] * 42        # 节气文本
+            jiaqi_label = [None] * 42        # 假期文本
+            jieri_label_lunar = [None] * 42  # 农历节日文本
+            jieri_label_solar = [None] * 42  # 阳历节日文本
+
+            # 优化：使用全局缓存管理器
+            loop_start = time.time()
+            
+            for id in range(42):
+                # 计算日期逻辑（保持原有逻辑）
+                if id - tapweek1id >= 0 and id - tapweek1id < tap_month_sum:
+                    year = tap_year
+                    month = tap_month
+                    day = id - tapweek1id + 1
+                    day_label = f"{day:02d}"
+                    month_label = f"{int(month):02d}"
+                
+                if id - tapweek1id < 0 and int(tap_month) > 1:
+                    year = tap_year
+                    month = int(tap_month) - 1
+                    day = id - tapweek1id + 1 + tap_month_sum_last
+                    day_label = f"{day:02d}"
+                    month_label = f"{month:02d}"
+                
+                if id - tapweek1id < 0 and tap_month == "01":
+                    year = str(int(tap_year) - 1)
+                    day = id - tapweek1id + 1 + tap_month_sum_last
+                    day_label = f"{day:02d}"
+                    month_label = "12"
+                
+                if id - tapweek1id >= tap_month_sum and int(tap_month) < 12:
+                    year = tap_year
+                    month = int(tap_month) + 1
+                    day = id - tapweek1id - tap_month_sum + 1
+                    day_label = f"{day:02d}"
+                    month_label = f"{month:02d}"
+                
+                if id - tapweek1id >= tap_month_sum and tap_month == "12":
+                    year = str(int(tap_year) + 1)
+                    day = id - tapweek1id - tap_month_sum + 1
+                    day_label = f"{day:02d}"
+                    month_label = "01"
+                
+                tap_new_dateTime = f"{year}-{month_label}-{day_label}T00:00:00"
+                
+                # 优化：使用全局缓存管理器获取日期对象
+                lunarid, solarid = lunar_cache_manager.get_date_objects(tap_new_dateTime)
+                
+                lunar_label[id] = f"{lunarid.getMonthInChinese()}月{lunarid.getDayInChinese()}"
+                jieqi_label[id] = lunarid.getJieQi()
+                
+                festivals_lunar = lunarid.getFestivals()
+                jieri_label_lunar[id] = festivals_lunar[0] if festivals_lunar else None
+                
+                festivals_solar = solarid.getFestivals()
+                jieri_label_solar[id] = festivals_solar[0] if festivals_solar else None
+
+                yy = lunarid.getYear()
+                mm = str(abs(lunarid.getMonth())).zfill(2)
+                dd = str(abs(lunarid.getDay())).zfill(2)
+                # 优化：使用缓存管理器获取农历月天数
+                lunarsum = lunar_cache_manager.get_month_days(int(yy), int(mm))
+                lunarday_num[id] = f"{mm}{dd}{lunarsum}"
+                
+                d1 = f"{year}-{month_label}-{day_label}"
+                d2 = HolidayUtil.getHoliday(d1)
+                if d2 is not None:
+                    jiaqi_label[id] = d2.isWork()
+
+            loop_time = (time.time() - loop_start) * 1000
+            _LOGGER.debug(f"[SENSOR] 日历数组循环生成完成，耗时: {loop_time:.2f}毫秒")
+            
+            # 更新缓存
+            self._cached_calendar_data = {
+                "lunarday_num": lunarday_num,
+                "lunar_label": lunar_label,
+                "jieqi_label": jieqi_label,
+                "jiaqi_label": jiaqi_label,
+                "jieri_label_lunar": jieri_label_lunar,
+                "jieri_label_solar": jieri_label_solar
+            }
+            self._cached_calendar_month = current_month_key
+            _LOGGER.debug(f"[SENSOR] 日历缓存已更新，月份: {current_month_key}")
+            
         calendar_time = (time.time() - calendar_start) * 1000
         _LOGGER.debug(f"[SENSOR] 日历数组生成总耗时: {calendar_time:.2f}毫秒")
 
