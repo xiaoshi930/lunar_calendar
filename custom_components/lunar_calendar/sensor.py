@@ -68,7 +68,8 @@ class LunarSensor(SensorEntity):
         def _async_state_change_listener(event):
             """当被监听的实体状态改变时处理。"""
             _LOGGER.debug(f"[SENSOR] 检测到日期变化事件，触发更新: {event.event_type}")
-            self.async_schedule_update_ha_state(True)
+            # 确保在事件循环中调度更新
+            self.hass.async_create_task(self._async_update_callback())
             
         self._unsubscribe_listener = async_track_state_change_event(
             self.hass, ["date.lunar_tap_date"], _async_state_change_listener
@@ -89,7 +90,10 @@ class LunarSensor(SensorEntity):
             # 清除农历计算缓存
             lunar_cache_manager.clear_cache()
             # 延迟1秒后更新，确保日期已更新
-            async_call_later(self.hass, 1, lambda _: self.async_schedule_update_ha_state(True))
+            # 使用正确的异步回调方式
+            async def _delayed_update(_):
+                await self.async_schedule_update_ha_state(True)
+            async_call_later(self.hass, 1, _delayed_update)
             
         self.hass.bus.async_listen("lunar_calendar_midnight_update", _async_midnight_listener)
 
@@ -108,6 +112,10 @@ class LunarSensor(SensorEntity):
         if self._unsubscribe_listener is not None:
             self._unsubscribe_listener()
             self._unsubscribe_listener = None
+
+    async def _async_update_callback(self):
+        """异步更新回调函数，确保线程安全。"""
+        await self.async_schedule_update_ha_state(True)
 
     def update(self) -> None:
         """获取传感器的新状态数据。"""
