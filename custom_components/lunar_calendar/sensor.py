@@ -92,7 +92,9 @@ class LunarSensor(SensorEntity):
             # 延迟1秒后更新，确保日期已更新
             # 使用正确的异步回调方式
             async def _delayed_update(_):
-                await self.async_schedule_update_ha_state(True)
+                result = self.async_schedule_update_ha_state(True)
+                if result is not None:
+                    await result
             async_call_later(self.hass, 1, _delayed_update)
             
         self.hass.bus.async_listen("lunar_calendar_midnight_update", _async_midnight_listener)
@@ -115,7 +117,9 @@ class LunarSensor(SensorEntity):
 
     async def _async_update_callback(self):
         """异步更新回调函数，确保线程安全。"""
-        await self.async_schedule_update_ha_state(True)
+        result = self.async_schedule_update_ha_state(True)
+        if result is not None:
+            await result
 
     def update(self) -> None:
         """获取传感器的新状态数据。"""
