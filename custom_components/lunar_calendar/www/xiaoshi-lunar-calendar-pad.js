@@ -581,6 +581,7 @@ export class LunarCalendarPadDate extends LitElement {
       --popup-min-width: 800px;
       --mdc-theme-surface: rgb(0,0,0,0);
       --dialog-backdrop-filter: blur(10px) brightness(1);
+      --ha-dialog-scrim-backdrop-filter: blur(10px) brightness(1);
     `;
     window.browser_mod.service('popup', { 
       style: popupStyle,
