@@ -1,6 +1,5 @@
 import { LitElement, html, css } from "https://unpkg.com/lit-element@2.4.0/lit-element.js?module";
 
-
 export class LunarCalendarPhoneDate extends LitElement {
   static get properties() {
     return {
@@ -94,6 +93,7 @@ export class LunarCalendarPhoneDate extends LitElement {
     const popupStyle = this.config.popup_style || `
       --mdc-theme-surface: rgb(0,0,0,0);
       --dialog-backdrop-filter: blur(10px) brightness(1);
+      --ha-dialog-scrim-backdrop-filter: blur(10px) brightness(1);
     `;
     window.browser_mod.service('popup', { 
       style: popupStyle,
