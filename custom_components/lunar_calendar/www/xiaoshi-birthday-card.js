@@ -1168,11 +1168,9 @@ export class XiaoshiBirthdayCard extends LitElement {
 
   _handleRefresh() {
     this._loadOilPriceData();
-    _handleClick()
   }
 
   _handleEntityClick(entity) {
-    _handleClick()
     // 点击实体时打开实体详情页
     if (entity.entity_id) {
       const evt = new Event('hass-more-info', { composed: true });
