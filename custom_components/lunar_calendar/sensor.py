@@ -373,7 +373,7 @@ class LunarSensor(SensorEntity):
         now = Solar.fromYmd(int(now_solar_year), int(now_solar_month), int(now_solar_day))
         num = now.subtract(last)
         jieqi = {
-            "节气": f"{last_jieqi} 第{num}天",
+            "节气": f"{last_jieqi} 今天" if num == 0 else f"{last_jieqi} 第{num}天",
             "上一节气": lastjieqi,
             "下一节气": nextjieqi,
         }
@@ -469,20 +469,26 @@ class LunarSensor(SensorEntity):
                 if solar_festivals:
                     for festival in solar_festivals:
                         if festival and festival != "None":
-                            jieri_array.append(f"{festival} {days_ahead}天")
-                
+                            if days_ahead == 0:
+                                jieri_array.append(f"{festival} 今天")
+                            else:
+                                jieri_array.append(f"{festival} {days_ahead}天")
+
                 # 获取对应的农历日期和节日
                 future_lunar = now_lunar_datetime.next(days_ahead)
                 lunar_festivals = future_lunar.getFestivals()
                 if lunar_festivals:
                     for festival in lunar_festivals:
                         if festival and festival != "None":
-                            jieri_array.append(f"{festival} {days_ahead}天")
+                            if days_ahead == 0:
+                                jieri_array.append(f"{festival} 今天")
+                            else:
+                                jieri_array.append(f"{festival} {days_ahead}天")
             
             # 更新缓存
             self._cached_festivals = jieri_array
             self._cache_date = current_date
-            _LOGGER.debug(f"[SENSOR] 节日缓存已更新，日期: {current_date}")
+            _LOGGER.debug(f"[SENSOR] 节日缓存已更新，日期: {current_date}，节日列表: {jieri_array}")
         else:
             jieri_array = self._cached_festivals
             _LOGGER.debug(f"[SENSOR] 使用节日缓存，跳过计算")
@@ -548,7 +554,10 @@ class LunarSensor(SensorEntity):
                         
                         days_until = (next_birthday - today).days
                         birthday_data["阳历天数"] = int(days_until)
-                        birthday_data["阳历天数说明"] = f"{name} 距离{days_until}天"
+                        if days_until == 0:
+                            birthday_data["阳历天数说明"] = f"{name} 今天"
+                        else:
+                            birthday_data["阳历天数说明"] = f"{name} 距离{days_until}天"
                     except (ValueError, IndexError):
                         pass
                 
@@ -606,7 +615,10 @@ class LunarSensor(SensorEntity):
                         
                         days_until = (next_birthday - today).days
                         birthday_data["农历天数"] = int(days_until)
-                        birthday_data["农历天数说明"] = f"{name} 距离{days_until}天"
+                        if days_until == 0:
+                            birthday_data["农历天数说明"] = f"{name} 今天"
+                        else:
+                            birthday_data["农历天数说明"] = f"{name} 距离{days_until}天"
                     except (ValueError, IndexError) as e:
                         _LOGGER.error(f"处理农历生日出错: {name}, 日期: {lunar_birthday}, 错误: {str(e)}")
                         
@@ -621,24 +633,29 @@ class LunarSensor(SensorEntity):
             sorted_birthdays = []
             for item in birthday_info:
                 name = item.get("名称", "")
-                lunar_days = item.get("农历天数", "")
-                solar_days = item.get("阳历天数", "")
-                
+                lunar_days = item.get("农历天数")
+                solar_days = item.get("阳历天数")
+
                 # 优先使用农历天数，如果没有则使用阳历天数
-                if lunar_days:
+                if lunar_days is not None and lunar_days != "":
                     days = int(lunar_days)
                     sorted_birthdays.append({"name": name, "days": days})
-                elif solar_days:
+                elif solar_days is not None and solar_days != "":
                     days = int(solar_days)
                     sorted_birthdays.append({"name": name, "days": days})
             
             # 按天数排序（仅用于"最近的生日"）
             sorted_birthdays.sort(key=lambda x: x["days"])
+            _LOGGER.debug(f"[SENSOR] 排序后的生日列表: {sorted_birthdays}")
             
             # 生成最近生日信息数组
             nearest_birthdays_array = []
             for item in sorted_birthdays:
-                nearest_birthdays_array.append(f"{item['name']} 距离{item['days']}天")
+                if item['days'] == 0:
+                    nearest_birthdays_array.append(f"{item['name']} 今天")
+                else:
+                    nearest_birthdays_array.append(f"{item['name']} 距离{item['days']}天")
+            _LOGGER.debug(f"[SENSOR] 最近的生日列表: {nearest_birthdays_array}")
             
             sort_time = (time.time() - sort_start) * 1000
             birthday_time = (time.time() - birthday_start) * 1000
