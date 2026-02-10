@@ -1,4 +1,4 @@
-console.info("%c 消逝卡-万年历 \n%c        v 3.1 ", "color: red; font-weight: bold; background: black", "color: white; font-weight: bold; background: black");
+console.info("%c 消逝卡-万年历 \n%c        v 3.2 ", "color: red; font-weight: bold; background: black", "color: white; font-weight: bold; background: black");
 
 const loadCards  = async () => {
   await import('./xiaoshi-lunar-calendar.js');
