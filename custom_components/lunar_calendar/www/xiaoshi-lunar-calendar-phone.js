@@ -90,9 +90,12 @@ export class LunarCalendarPhoneDate extends LitElement {
       theme: this._evaluateTheme()
     };
     const popupStyle = this.config.popup_style || `
-      --mdc-theme-surface: rgb(0,0,0,0);
+      --mdc-theme-surface: rgb(150,150,150,0.5);
       --dialog-backdrop-filter: blur(10px) brightness(1);
-      --ha-dialog-scrim-backdrop-filter: blur(10px) brightness(1);
+      --ha-dialog-scrim-backdrop-filter: blur(10px) brightness(1);          
+      ha-dialog{
+        --dialog-content-position: unset;
+      }
     `;
     window.browser_mod.service('popup', { 
       style: popupStyle,
