@@ -590,18 +590,10 @@ export class LunarCalendarPadDate extends LitElement {
     };
     const popupStyle = this.config.popup_style || `
       --ha-dialog-width-md: 800px;                                   /* 新-卡片宽度 */
-      --ha-space-12: 1px;                                            /* 新-缩小上方空白区域 */
       --dialog-box-shadow: none;                                     /* 新-取消阴影 */
-      --icon-primary-color: rgb(200,0,0);                          /* 新-设置关闭图标颜色 */
       --card-background-color: rgb(0,0,0,0);                         /* 新-取消卡片背景色 */
       --mdc-dialog-scrim-color: rgb(100,100,100,0.2);                /* 新-设置遮罩背景色 */
       --ha-dialog-scrim-backdrop-filter: blur(10px) brightness(1);   /* 新-设置遮罩模糊度 */
-      ha-dialog{
-        --dialog-surface-margin-top: 0;                              /* 新-缩小browser上方空白区域 */
-      };
-      ha-dialog .content .container{
-          padding: 0px 8px !important;                               /* 新-缩小browser上方空白区域 */
-      };
 
       --popup-min-width: 800px;                                      /* 旧-卡片宽度 */
       --ha-card-border-width: 0;                                     /* 旧-取消卡片边框 */
