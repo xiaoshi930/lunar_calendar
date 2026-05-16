@@ -584,6 +584,8 @@ export class LunarCalendarPadDate extends LitElement {
 
   _showPopup() {
     this._handleClick();
+    const theme = this._evaluateTheme();
+    const scrimColor = theme === 'on' ? 'rgba(50, 50, 50, 0.3)' : 'rgba(200, 200, 200, 0.3)';
     const popupContent = this.config.popup_content || {
       type: 'custom:xiaoshi-lunar-calendar-pad',
       theme: this._evaluateTheme()
@@ -592,13 +594,13 @@ export class LunarCalendarPadDate extends LitElement {
       --ha-dialog-width-md: 800px;                                   /* 新-卡片宽度 */
       --dialog-box-shadow: none;                                     /* 新-取消阴影 */
       --card-background-color: rgb(0,0,0,0);                         /* 新-取消卡片背景色 */
-      --mdc-dialog-scrim-color: rgb(100,100,100,0.2);                /* 新-设置遮罩背景色 */
+      --mdc-dialog-scrim-color: ${scrimColor};                       /* 新-设置遮罩背景色 */
       --ha-dialog-scrim-backdrop-filter: blur(10px) brightness(1);   /* 新-设置遮罩模糊度 */
 
       --popup-min-width: 800px;                                      /* 旧-卡片宽度 */
       --ha-card-border-width: 0;                                     /* 旧-取消卡片边框 */
       --ha-card-background: rgb(0,0,0,0);                            /* 旧-取消卡片背景色 */
-      --mdc-theme-surface: rgb(150,150,150,0.5);                     /* 旧-设置遮罩背景色 */
+      --mdc-theme-surface: ${scrimColor};                            /* 旧-设置遮罩背景色 */
       --dialog-backdrop-filter: blur(10px) brightness(1);            /* 旧-设置遮罩模糊度 */
     `;
     window.browser_mod.service('popup', { 
