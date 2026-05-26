@@ -1013,7 +1013,6 @@ class LunarCalendarPadDate extends LitElement {
         { type: 'subscribe_events', event_type: 'state_changed' }
       ).then((unsub) => {
         this._popupHassUnsubscribe = unsub;
-        console.log('[LunarCalendarPadDate] 已订阅 hass 状态变化（RAF批处理模式）');
       });
     } catch (err) {
       console.error('[LunarCalendarPadDate] 订阅状态变化失败:', err);
