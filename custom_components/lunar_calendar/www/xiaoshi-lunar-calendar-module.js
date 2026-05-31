@@ -15,7 +15,7 @@ export class LunarCalendarHead extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '60px';
     }
@@ -24,7 +24,7 @@ export class LunarCalendarHead extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%';
     this.height = '60px';
   }
@@ -84,29 +84,33 @@ export class LunarCalendarHead extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -189,7 +193,7 @@ export class LunarCalendarBody1 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on'; 
+      this.theme = config.theme || 'system'; 
       this.width = config.width || '100%';
       this.height = config.height || '55px';
     }
@@ -198,7 +202,7 @@ export class LunarCalendarBody1 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%';
     this.height = '55px';
   }
@@ -245,29 +249,33 @@ export class LunarCalendarBody1 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -343,7 +351,7 @@ export class LunarCalendarBody2 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '55px';
     }
@@ -352,7 +360,7 @@ export class LunarCalendarBody2 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%';
     this.height = '55px';
   }
@@ -400,21 +408,25 @@ export class LunarCalendarBody2 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   _calculateFontSize(length) {
     if (length <= 40) return '13px';
@@ -429,8 +441,8 @@ export class LunarCalendarBody2 extends LitElement {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `background: ${bgColor};color: ${fgColor};width: ${this.width};height: ${this.height};
     `;
     const lunarData = this.hass.states[this.lunar].attributes.老黄历信息;
@@ -468,7 +480,7 @@ export class LunarCalendarBody3 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '55px';
     }
@@ -477,7 +489,7 @@ export class LunarCalendarBody3 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%';
     this.height = '55px';
   }
@@ -525,21 +537,25 @@ export class LunarCalendarBody3 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   _calculateFontSize(length) {
     if (length <= 40) return '13px';
@@ -554,8 +570,8 @@ export class LunarCalendarBody3 extends LitElement {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -597,7 +613,7 @@ export class LunarCalendarBody4 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '55px';
     }
@@ -606,7 +622,7 @@ export class LunarCalendarBody4 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%';
     this.height = '55px';
   }
@@ -647,29 +663,33 @@ export class LunarCalendarBody4 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -712,7 +732,7 @@ export class LunarCalendarBody5 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '55px';
     }
@@ -721,7 +741,7 @@ export class LunarCalendarBody5 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '55px';
   }
@@ -762,29 +782,33 @@ export class LunarCalendarBody5 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -827,7 +851,7 @@ export class LunarCalendarBody6 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '55px';
     }
@@ -836,7 +860,7 @@ export class LunarCalendarBody6 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '55px';
   }
@@ -877,29 +901,33 @@ export class LunarCalendarBody6 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -945,7 +973,7 @@ export class LunarCalendarBody7 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '55px';
     }
@@ -954,7 +982,7 @@ export class LunarCalendarBody7 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '55px';
   }
@@ -1005,21 +1033,25 @@ export class LunarCalendarBody7 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   _getRotationAngle(label) {
     if (!label) return "rotate(0deg)";
@@ -1039,8 +1071,8 @@ export class LunarCalendarBody7 extends LitElement {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -1096,7 +1128,7 @@ export class LunarCalendarLeft1 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '90px';
     }
@@ -1105,7 +1137,7 @@ export class LunarCalendarLeft1 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '90px';
   }
@@ -1148,29 +1180,33 @@ export class LunarCalendarLeft1 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `background: ${bgColor};color: ${fgColor};width: ${this.width};height: ${this.height};
     `;
     const lunarData = this.hass.states[this.lunar].attributes.老黄历信息;
@@ -1215,7 +1251,7 @@ export class LunarCalendarRight1 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '90px';
     }
@@ -1224,7 +1260,7 @@ export class LunarCalendarRight1 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '90px';
   }
@@ -1267,29 +1303,33 @@ export class LunarCalendarRight1 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -1329,7 +1369,7 @@ export class LunarCalendarLeft2 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '30px';
     }
@@ -1338,7 +1378,7 @@ export class LunarCalendarLeft2 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '30px';
   }
@@ -1371,29 +1411,33 @@ export class LunarCalendarLeft2 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -1426,7 +1470,7 @@ export class LunarCalendarRight2 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '30px';
     }
@@ -1435,7 +1479,7 @@ export class LunarCalendarRight2 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '30px';
   }
@@ -1468,29 +1512,33 @@ export class LunarCalendarRight2 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -1523,7 +1571,7 @@ export class LunarCalendarLeft3 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '120px';
     }
@@ -1532,7 +1580,7 @@ export class LunarCalendarLeft3 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '120px';
   }
@@ -1580,21 +1628,25 @@ export class LunarCalendarLeft3 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   _calculateFontSize(length) {
     if (length <= 70) return '13px';
@@ -1608,8 +1660,8 @@ export class LunarCalendarLeft3 extends LitElement {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -1649,7 +1701,7 @@ export class LunarCalendarRight3 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '120px';
     }
@@ -1658,7 +1710,7 @@ export class LunarCalendarRight3 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '120px';
   }
@@ -1706,21 +1758,25 @@ export class LunarCalendarRight3 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   _calculateFontSize(length) {
     if (length <= 70) return '13px'; 
@@ -1734,8 +1790,8 @@ export class LunarCalendarRight3 extends LitElement {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -1775,7 +1831,7 @@ export class LunarCalendarLeft4 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '120px';
     }
@@ -1784,7 +1840,7 @@ export class LunarCalendarLeft4 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '120px';
   }
@@ -1828,21 +1884,25 @@ export class LunarCalendarLeft4 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   _calculateFontSize(length) {
     if (length <= 70) return '13px';
@@ -1856,8 +1916,8 @@ export class LunarCalendarLeft4 extends LitElement {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -1897,7 +1957,7 @@ export class LunarCalendarRight4 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '120px';
     }
@@ -1906,7 +1966,7 @@ export class LunarCalendarRight4 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '120px';
   }
@@ -1950,21 +2010,25 @@ export class LunarCalendarRight4 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   _calculateFontSize(length) {
     if (length <= 70) return '13px'; 
@@ -1978,8 +2042,8 @@ export class LunarCalendarRight4 extends LitElement {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -2019,7 +2083,7 @@ export class LunarCalendarLeft5 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '60px';
     }
@@ -2028,7 +2092,7 @@ export class LunarCalendarLeft5 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '60px';
   }
@@ -2070,29 +2134,33 @@ export class LunarCalendarLeft5 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -2129,7 +2197,7 @@ export class LunarCalendarRight5 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '60px';
     }
@@ -2138,7 +2206,7 @@ export class LunarCalendarRight5 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '60px';
   }
@@ -2180,29 +2248,33 @@ export class LunarCalendarRight5 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -2239,7 +2311,7 @@ export class LunarCalendarLeft6 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '60px';
     }
@@ -2248,7 +2320,7 @@ export class LunarCalendarLeft6 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '60px';
   }
@@ -2292,29 +2364,33 @@ export class LunarCalendarLeft6 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};
@@ -2351,7 +2427,7 @@ export class LunarCalendarRight6 extends LitElement {
     this.config = config;
     if (config) {
       this.lunar = config.lunar || 'sensor.lunar_calendar';
-      this.theme = config.theme || 'on';
+      this.theme = config.theme || 'system';
       this.width = config.width || '100%';
       this.height = config.height || '60px';
     }
@@ -2360,7 +2436,7 @@ export class LunarCalendarRight6 extends LitElement {
   constructor() {
     super();
     this.lunar = 'sensor.lunar_calendar';
-    this.theme = 'on';
+    this.theme = 'system';
     this.width = '100%'; 
     this.height = '60px';
   }
@@ -2402,29 +2478,33 @@ export class LunarCalendarRight6 extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   render() {
     if (!this.hass || !this.hass.states[this.lunar] || !this.hass.states[this.lunar].attributes) {
       return html`<div export class="calendar">加载中...</div>`;
     }
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const style = `
       background: ${bgColor};
       color: ${fgColor};

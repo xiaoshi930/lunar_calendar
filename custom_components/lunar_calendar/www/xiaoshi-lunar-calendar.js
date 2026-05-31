@@ -46,7 +46,7 @@ export class LunarCalendar extends LitElement {
     this.day = today.getDate();
     this.width = '100%';
     this.height = '260px';
-    this.theme = 'on';
+    this.theme = 'system';
     this.activeNav = '';
     this.todayDate = `${today.getFullYear()}-${this.pad(today.getMonth() + 1)}-${this.pad(today.getDate())}`;
     this.selectedDate = this.todayDate;
@@ -491,8 +491,8 @@ export class LunarCalendar extends LitElement {
   
   render() {
     const theme = this._evaluateTheme();
-    const bgColor = theme === 'on' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
-    const fgColor = theme === 'on' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
+    const bgColor = theme === 'light' ? 'rgb(255, 255, 255)' : 'rgb(50, 50, 50)';
+    const fgColor = theme === 'light' ? 'rgb(0, 0, 0)' : 'rgb(255, 255, 255)';
     const daysInMonth = this.getDaysInMonth(this.year, this.month);
     const firstDayOfMonth = new Date(this.year, this.month - 1, 1).getDay();
     const adjustedFirstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
@@ -659,21 +659,25 @@ export class LunarCalendar extends LitElement {
   }
   
   _evaluateTheme() {
-    try {
-      if (!this.config || !this.config.theme) return 'on';
-      if (typeof this.config.theme === 'function') {
-        return this.config.theme();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      if (typeof this.config.theme === 'string' && 
-          (this.config.theme.includes('return') || this.config.theme.includes('=>'))) {
-        return (new Function(`return ${this.config.theme}`))();
-      }
-      return this.config.theme;
-    } catch(e) {
-      console.error('计算主题时出错:', e);
-      return 'on';
-    }
-  }
+  } 
 
   getDaysInMonth(year, month) {
     return new Date(year, month, 0).getDate();
