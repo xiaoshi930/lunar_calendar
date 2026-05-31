@@ -13,7 +13,7 @@ class LunarCalendarPhone extends LitElement {
   setConfig(config) {
     this.config = {
       lunar: config?.lunar || 'sensor.lunar_calendar',
-      theme: config?.theme || 'on',
+      theme: config?.theme || 'system',
       width: config?.width || '99.5%',
       height: config?.height || '88.4vh',
       date: config?.date || 'date.lunar_tap_date',
@@ -184,11 +184,12 @@ class LunarCalendarPhoneDateEditor extends LitElement {
           <label>主题</label>
           <select
             @change=${this._valueChanged}
-            .value=${this.config.theme || 'off'}
+            .value=${this.config.theme || 'system'}
             name="theme"
           >
-            <option value="on">on -  黑色字体、弹出窗体亮色背景</option>
-            <option value="off">off - 白色字体、弹出窗体暗色背景</option>
+            <option value="system">system -  黑色字体、弹出窗体亮色背景</option>
+            <option value="light">light -  黑色字体、弹出窗体亮色背景</option>
+            <option value="dark">dark - 白色字体、弹出窗体暗色背景</option>
           </select>
           <span style="font-size:12px;color:#888;">也可引用全局函数：[[[ return theme() ]]]</span>
         </div>
@@ -279,7 +280,7 @@ class LunarCalendarPhoneDate extends LitElement {
 
   setConfig(config) {
     this.config = config;
-    this._theme = config.theme || 'off';
+    this._theme = config.theme || 'system';
     this._simplified = config.simplified !== undefined ? config.simplified : false;
   }
 
@@ -306,7 +307,7 @@ class LunarCalendarPhoneDate extends LitElement {
 
   render() {
     const theme = this._evaluateTheme();
-    const Color =  theme  == 'on' ? 'rgb(0,0,0)' : 'rgb(255,255,255)';
+    const Color =  theme == 'light' ? 'rgb(0,0,0)' : 'rgb(255,255,255)';
     this.style.setProperty('--theme-color', Color);
     if (!this.hass || !this.config) {
       return html``;
@@ -333,15 +334,24 @@ class LunarCalendarPhoneDate extends LitElement {
   }
 
   _evaluateTheme() {
-    try {
-      if (typeof this.config.theme === 'function') return this.config.theme();
-      if (typeof this.config.theme === 'string' && this.config.theme.includes('theme()')) {
-        return (new Function('return theme()'))();
+      try {
+          const mode = this.config ? this.config.theme : 'system';
+          if (mode === 'light') return 'light';
+          if (mode === 'dark') return 'dark';
+          if (mode === 'system' || !mode) {
+              if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+              return 'light';
+          }
+          if (mode === 'function' || (typeof mode === 'string' && mode.includes('theme()'))) {
+              if (typeof window.theme === 'function') {
+                  return window.theme() || 'light';
+              }
+            return 'light';
+          }
+          return mode;
+      } catch (e) {
+          return 'light';
       }
-      return this.config.theme || 'off';
-    } catch(e) {
-      return 'off';
-    }
   } 
 
   _handleClick(){
