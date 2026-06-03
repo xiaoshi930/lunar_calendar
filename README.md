@@ -1,3 +1,4 @@
+## 前端卡片统一迁移到项目：https://github.com/xiaoshi930/xiaoshi
 # 数据来源
 https://6tail.cn/calendar/api.html#overview.html  
 https://github.com/6tail/lunar-python
