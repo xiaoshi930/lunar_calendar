@@ -470,7 +470,7 @@ class LunarSensor(SensorEntity):
                     for festival in solar_festivals:
                         if festival and festival != "None":
                             if days_ahead == 0:
-                                jieri_array.append(f"{festival} 今天")
+                                jieri_array.append(f"{festival} 今天生日🎂")
                             else:
                                 jieri_array.append(f"{festival} {days_ahead}天")
 
@@ -481,7 +481,7 @@ class LunarSensor(SensorEntity):
                     for festival in lunar_festivals:
                         if festival and festival != "None":
                             if days_ahead == 0:
-                                jieri_array.append(f"{festival} 今天")
+                                jieri_array.append(f"{festival} 今天生日🎂")
                             else:
                                 jieri_array.append(f"{festival} {days_ahead}天")
             
@@ -555,7 +555,7 @@ class LunarSensor(SensorEntity):
                         days_until = (next_birthday - today).days
                         birthday_data["阳历天数"] = int(days_until)
                         if days_until == 0:
-                            birthday_data["阳历天数说明"] = f"{name} 今天"
+                            birthday_data["阳历天数说明"] = f"{name} 今天生日🎂"
                         else:
                             birthday_data["阳历天数说明"] = f"{name} 距离{days_until}天"
                     except (ValueError, IndexError):
@@ -616,7 +616,7 @@ class LunarSensor(SensorEntity):
                         days_until = (next_birthday - today).days
                         birthday_data["农历天数"] = int(days_until)
                         if days_until == 0:
-                            birthday_data["农历天数说明"] = f"{name} 今天"
+                            birthday_data["农历天数说明"] = f"{name} 今天生日🎂"
                         else:
                             birthday_data["农历天数说明"] = f"{name} 距离{days_until}天"
                     except (ValueError, IndexError) as e:
@@ -652,7 +652,7 @@ class LunarSensor(SensorEntity):
             nearest_birthdays_array = []
             for item in sorted_birthdays:
                 if item['days'] == 0:
-                    nearest_birthdays_array.append(f"{item['name']} 今天")
+                    nearest_birthdays_array.append(f"{item['name']} 今天生日🎂")
                 else:
                     nearest_birthdays_array.append(f"{item['name']} 距离{item['days']}天")
             _LOGGER.debug(f"[SENSOR] 最近的生日列表: {nearest_birthdays_array}")
