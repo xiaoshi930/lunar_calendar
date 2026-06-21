@@ -470,7 +470,7 @@ class LunarSensor(SensorEntity):
                     for festival in solar_festivals:
                         if festival and festival != "None":
                             if days_ahead == 0:
-                                jieri_array.append(f"{festival} 今天生日🎂")
+                                jieri_array.append(f"{festival} 今天")
                             else:
                                 jieri_array.append(f"{festival} {days_ahead}天")
 
@@ -481,7 +481,7 @@ class LunarSensor(SensorEntity):
                     for festival in lunar_festivals:
                         if festival and festival != "None":
                             if days_ahead == 0:
-                                jieri_array.append(f"{festival} 今天生日🎂")
+                                jieri_array.append(f"{festival} 今天")
                             else:
                                 jieri_array.append(f"{festival} {days_ahead}天")
             
