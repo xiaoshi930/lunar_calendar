@@ -373,7 +373,7 @@ class LunarSensor(SensorEntity):
         now = Solar.fromYmd(int(now_solar_year), int(now_solar_month), int(now_solar_day))
         num = now.subtract(last)
         jieqi = {
-            "节气": f"{last_jieqi} 今天" if num == 0 else f"{last_jieqi} 第{num}天",
+            "节气": f"{last_jieqi} 今天" if num == 0 else f"{last_jieqi} 第{num+1}天",
             "上一节气": lastjieqi,
             "下一节气": nextjieqi,
         }
