@@ -32,7 +32,7 @@ https://github.com/6tail/lunar-python
 
 **引用示例（单独使用）**
 ~~~
-type: custom:lunar-calendar-pad
+type: custom:xiaoshi-lunar-calendar-pad
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
 ~~~
 
@@ -42,7 +42,7 @@ theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，�
 
 **引用示例**
 ~~~
-type: custom:lunar-calendar-phone-date
+type: custom:xiaoshi-lunar-calendar-phone-date
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
 ~~~
 
@@ -52,7 +52,7 @@ theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，�
 
 **引用示例（单独使用）**
 ~~~
-type: custom:lunar-calendar-phone
+type: custom:xiaoshi-lunar-calendar-phone
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
 ~~~
 
@@ -62,7 +62,7 @@ theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，�
 
 **引用示例（单独使用）**
 ~~~
-type: custom:lunar-calendar
+type: custom:xiaoshi-lunar-calendar
 theme: '[[[ return theme() ]]]'    # 选项on是白色，选项off是黑色，也可以引用全局函数：'[[[ return theme()]]]'
 ~~~
 
